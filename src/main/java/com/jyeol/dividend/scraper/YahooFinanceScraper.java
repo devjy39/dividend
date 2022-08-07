@@ -27,7 +27,7 @@ public class YahooFinanceScraper implements Scraper{
     private static final long START_TIME = 86400; // 60 * 60 * 24
 
     @Override
-    public ScrapedResult scrap(Company company) {
+    public ScrapedResult scrapDividend(Company company) {
         var scrapResult = new ScrapedResult();
         scrapResult.setCompany(company);
 

@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface Scraper {
     Optional<Company> scrapCompanyByTicker(String ticker);
 
-    ScrapedResult scrap(Company company);
+    ScrapedResult scrapDividend(Company company);
 }
