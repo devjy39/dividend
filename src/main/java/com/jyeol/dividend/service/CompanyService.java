@@ -10,6 +10,7 @@ import com.jyeol.dividend.scraper.Scraper;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.Trie;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -60,6 +61,11 @@ public class CompanyService {
         return company;
     }
 
+    /*
+    *   trie를 이용한 자동완성
+    *   DB단에 트래픽이 없어진다. -> 서버에서 모든 연산을 처리
+    *   data가 메모리에 올라가기 때문에 메모리에 부하
+    * */
     private void addAutocompleteKeyword(String keyword) {
         trie.put(keyword.toLowerCase(), null);
     }
@@ -72,4 +78,16 @@ public class CompanyService {
         trie.remove(keyword.toLowerCase());
     }
 
+    /*
+    *   DB를 이용한 자동완성
+    *   로직은 간단하지만 연산이 모두 DB에 있어서 트래픽이 많으면 DB에 부하가 많이 간다.
+    * */
+    public List<String> getCompanyNamesByKeyword(String keyword) {
+        Pageable limit = PageRequest.of(0, 10);
+
+        return companyRepository.findByNameStartingWithIgnoreCase(keyword, limit)
+                .stream()
+                .map(CompanyEntity::getName)
+                .collect(Collectors.toList());
+    }
 }
