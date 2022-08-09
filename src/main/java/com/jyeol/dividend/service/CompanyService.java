@@ -8,14 +8,19 @@ import com.jyeol.dividend.persist.entity.CompanyEntity;
 import com.jyeol.dividend.persist.entity.DividendEntity;
 import com.jyeol.dividend.scraper.Scraper;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.Trie;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CompanyService {
+    private final Trie<String, String> trie;
     private final Scraper scraper;
     private final CompanyRepository companyRepository;
     private final DividendRepository dividendRepository;
@@ -26,6 +31,11 @@ public class CompanyService {
         }
 
         return storeCompanyAndDividend(ticker);
+    }
+
+    public Page<Company> getAllCompany(Pageable pageable) {
+        return companyRepository.findAll(pageable)
+                .map(Company::from);
     }
 
 
@@ -44,6 +54,22 @@ public class CompanyService {
                 .collect(Collectors.toList());
         dividendRepository.saveAll(dividendEntities);
 
+
+        addAutocompleteKeyword(company.getName());
+
         return company;
     }
+
+    private void addAutocompleteKeyword(String keyword) {
+        trie.put(keyword.toLowerCase(), null);
+    }
+
+    public List<String> autocomplete(String keyword) {
+        return new ArrayList<>(trie.prefixMap(keyword.toLowerCase()).keySet());
+    }
+
+    public void deleteAutocompleteKeyword(String keyword) {
+        trie.remove(keyword.toLowerCase());
+    }
+
 }
