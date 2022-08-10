@@ -2,7 +2,7 @@ package com.jyeol.dividend.scraper;
 
 import com.jyeol.dividend.model.Company;
 import com.jyeol.dividend.model.Dividend;
-import com.jyeol.dividend.model.Month;
+import com.jyeol.dividend.model.constants.Month;
 import com.jyeol.dividend.model.ScrapedResult;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Connection;

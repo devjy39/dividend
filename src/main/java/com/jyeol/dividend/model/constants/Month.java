@@ -1,4 +1,4 @@
-package com.jyeol.dividend.model;
+package com.jyeol.dividend.model.constants;
 
 public enum Month {
     JAN("Jan", 1),
