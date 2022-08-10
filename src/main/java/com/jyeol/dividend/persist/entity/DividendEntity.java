@@ -1,15 +1,11 @@
 package com.jyeol.dividend.persist.entity;
 
-import com.jyeol.dividend.model.Dividend;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Getter
@@ -17,6 +13,11 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @Entity
+@Table(uniqueConstraints = {
+        @UniqueConstraint(
+                columnNames = {"companyId", "date"}
+        )
+})
 public class DividendEntity {
 
     @Id

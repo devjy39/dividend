@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
     private final DividendRepository dividendRepository;
 
+    @Transactional
     public Company save(String ticker) {
         if (companyRepository.existsByTicker(ticker)) {
             throw new RuntimeException("Already exists ticker -> " + ticker);
@@ -34,6 +36,7 @@ public class CompanyService {
         return storeCompanyAndDividend(ticker);
     }
 
+    @Transactional(readOnly = true)
     public Page<Company> getAllCompany(Pageable pageable) {
         return companyRepository.findAll(pageable)
                 .map(Company::from);
@@ -82,6 +85,7 @@ public class CompanyService {
     *   DB를 이용한 자동완성
     *   로직은 간단하지만 연산이 모두 DB에 있어서 트래픽이 많으면 DB에 부하가 많이 간다.
     * */
+    @Transactional(readOnly = true)
     public List<String> getCompanyNamesByKeyword(String keyword) {
         Pageable limit = PageRequest.of(0, 10);
 
