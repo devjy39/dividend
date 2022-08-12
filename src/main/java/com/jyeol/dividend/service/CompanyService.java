@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,10 @@ public class CompanyService {
 
     @Transactional
     public Company save(String ticker) {
+        if (ObjectUtils.isEmpty(ticker)) {
+            throw new RuntimeException("ticker is empty");
+        }
+
         if (companyRepository.existsByTicker(ticker)) {
             throw new RuntimeException("Already exists ticker -> " + ticker);
         }
