@@ -15,14 +15,11 @@ import java.util.List;
 public class MemberDto {
     private String username;
 
-    private String password;
-
     private List<String> roles;
 
     public static MemberDto fromEntity(MemberEntity memberEntity) {
         return MemberDto.builder()
                 .username(memberEntity.getUsername())
-                .password(memberEntity.getPassword())
                 .roles(memberEntity.getRoles())
                 .build();
     }

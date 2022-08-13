@@ -11,13 +11,13 @@ import javax.persistence.*;
 @Builder
 @Getter
 @Entity
+@Table(indexes = @Index(name = "idx_ticker", columnList = "ticker", unique = true))
 public class CompanyEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 
-    @Column(unique = true)
     private String ticker;
 
     public static CompanyEntity from(Company company) {

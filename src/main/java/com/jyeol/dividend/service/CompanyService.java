@@ -12,6 +12,7 @@ import org.apache.commons.collections4.Trie;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -98,5 +99,17 @@ public class CompanyService {
                 .stream()
                 .map(CompanyEntity::getName)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public String deleteCompany(String ticker) {
+        CompanyEntity companyEntity = companyRepository.findByTicker(ticker)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 ticker입니다."));
+
+        dividendRepository.deleteAllByCompanyId(companyEntity.getId());
+        deleteAutocompleteKeyword(companyEntity.getName());
+        companyRepository.delete(companyEntity);
+
+        return companyEntity.getName();
     }
 }
