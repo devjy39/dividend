@@ -1,5 +1,7 @@
 package com.jyeol.dividend.service;
 
+import com.jyeol.dividend.exception.impl.UserException;
+import com.jyeol.dividend.exception.type.UserError;
 import com.jyeol.dividend.model.Auth;
 import com.jyeol.dividend.model.MemberDto;
 import com.jyeol.dividend.persist.MemberRepository;
@@ -22,12 +24,12 @@ public class MemberService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return memberRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
+                .orElseThrow(()-> new UserException(UserError.NOT_EXIST_USER));
     }
 
     public MemberDto register(Auth.SignUp member) {
         if (memberRepository.existsByUsername(member.getUsername())) {
-            throw new RuntimeException("이미 사용 중인 아이디입니다.");
+            throw new UserException(UserError.ALREADY_EXIST_USER);
         }
 
         member.setPassword(passwordEncoder.encode(member.getPassword()));
@@ -37,10 +39,10 @@ public class MemberService implements UserDetailsService {
 
     public MemberDto authenticate(Auth.SignIn member) {
         MemberEntity memberEntity = memberRepository.findByUsername(member.getUsername())
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 ID 입니다."));
+                .orElseThrow(()->new UserException(UserError.NOT_EXIST_USER));
 
         if (!passwordEncoder.matches(member.getPassword(), memberEntity.getPassword())) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+            throw new UserException(UserError.PASSWORD_MIS_MATCH);
         }
 
         return MemberDto.fromEntity(memberEntity);

@@ -1,5 +1,7 @@
 package com.jyeol.dividend.service;
 
+import com.jyeol.dividend.exception.impl.CompanyException;
+import com.jyeol.dividend.exception.type.CompanyError;
 import com.jyeol.dividend.model.Company;
 import com.jyeol.dividend.model.Dividend;
 import com.jyeol.dividend.model.ScrapedResult;
@@ -26,7 +28,7 @@ public class FinanceService {
     @Transactional(readOnly = true)
     public ScrapedResult getDividendByCompanyName(String companyName) {
         CompanyEntity companyEntity = companyRepository.findByName(companyName)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 회사명입니다."));
+                .orElseThrow(() -> new CompanyException(CompanyError.INVALID_COMPANY_NAME));
 
         List<DividendEntity> dividendEntities = dividendRepository.findAllByCompanyId(companyEntity.getId());
 

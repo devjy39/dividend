@@ -1,5 +1,7 @@
 package com.jyeol.dividend.service;
 
+import com.jyeol.dividend.exception.impl.CompanyException;
+import com.jyeol.dividend.exception.type.CompanyError;
 import com.jyeol.dividend.model.Company;
 import com.jyeol.dividend.model.ScrapedResult;
 import com.jyeol.dividend.persist.CompanyRepository;
@@ -12,7 +14,6 @@ import org.apache.commons.collections4.Trie;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -32,11 +33,11 @@ public class CompanyService {
     @Transactional
     public Company save(String ticker) {
         if (ObjectUtils.isEmpty(ticker)) {
-            throw new RuntimeException("ticker is empty");
+            throw new CompanyException(CompanyError.INVALID_COMPANY_TICKER);
         }
 
         if (companyRepository.existsByTicker(ticker)) {
-            throw new RuntimeException("Already exists ticker -> " + ticker);
+            throw new CompanyException(CompanyError.ALREADY_EXIST_TICKER);
         }
 
         return storeCompanyAndDividend(ticker);
@@ -54,7 +55,7 @@ public class CompanyService {
      * */
     private Company storeCompanyAndDividend(String ticker) {
         Company company = scraper.scrapCompanyByTicker(ticker)
-                .orElseThrow(() -> new RuntimeException("Failed to scrap ticker -> " + ticker));
+                .orElseThrow(() -> new CompanyException(CompanyError.FAILED_SCRAP_BY_TICKER));
         ScrapedResult scrapedResult = scraper.scrapDividend(company);
 
         CompanyEntity companyEntity = companyRepository.save(CompanyEntity.from(company));
@@ -104,7 +105,7 @@ public class CompanyService {
     @Transactional
     public String deleteCompany(String ticker) {
         CompanyEntity companyEntity = companyRepository.findByTicker(ticker)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 ticker입니다."));
+                .orElseThrow(()->new CompanyException(CompanyError.INVALID_COMPANY_TICKER));
 
         dividendRepository.deleteAllByCompanyId(companyEntity.getId());
         deleteAutocompleteKeyword(companyEntity.getName());
