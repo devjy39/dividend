@@ -30,7 +30,7 @@ public class AuthController {
     public ResponseEntity<?> signin(@RequestBody Auth.SignIn request) {
         MemberDto member = memberService.authenticate(request);
         String token = tokenProvider.generateToken(member.getUsername(), member.getRoles());
-        log.info("user login -> {}",request.getUsername());
+        log.info("user login -> {}", request.getUsername());
 
         return ResponseEntity.ok(token);
     }

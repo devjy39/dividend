@@ -5,10 +5,12 @@ import com.jyeol.dividend.model.constants.CacheKey;
 import com.jyeol.dividend.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
@@ -49,12 +51,10 @@ public class CompanyController {
     }
 
     private void clearFinanceCache(String companyName) {
-        try {
-            Objects.requireNonNull(cacheManager.getCache(CacheKey.KEY_FINANCE))
-                    .evict(companyName);
-        } catch (NullPointerException e) {
-            log.error(e.getMessage());
-            e.printStackTrace();
+        Cache cache = cacheManager.getCache(CacheKey.KEY_FINANCE);
+
+        if (!ObjectUtils.isEmpty(cache)) {
+            cache.evict(companyName);
         }
     }
 }

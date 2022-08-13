@@ -59,15 +59,8 @@ public class TokenProvider {
             return false;
         }
 
-        try {
-            Claims claims = parseClaims(token);
-
-            return claims.getExpiration().after(new Date());
-        } catch (Exception e) {
-            log.error("invalid token - {}", token);
-            return false;
-        }
-
+        return parseClaims(token)
+                .getExpiration().after(new Date());
     }
 
     private Claims parseClaims(String token) {
@@ -77,8 +70,10 @@ public class TokenProvider {
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
+
         } catch (ExpiredJwtException e) {
             log.error("{} - expired Jwt", getUsername(token));
+
             return e.getClaims();
         } catch (Exception e) {
             throw new UserException(UserError.INVALID_TOKEN);

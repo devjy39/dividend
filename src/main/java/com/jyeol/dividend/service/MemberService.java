@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,6 +23,7 @@ public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return memberRepository.findByUsername(username)
                 .orElseThrow(()-> new UserException(UserError.NOT_EXIST_USER));
@@ -37,6 +39,7 @@ public class MemberService implements UserDetailsService {
         return MemberDto.fromEntity(memberRepository.save(member.toEntity()));
     }
 
+    @Transactional(readOnly = true)
     public MemberDto authenticate(Auth.SignIn member) {
         MemberEntity memberEntity = memberRepository.findByUsername(member.getUsername())
                 .orElseThrow(()->new UserException(UserError.NOT_EXIST_USER));

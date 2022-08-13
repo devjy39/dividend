@@ -3,6 +3,8 @@ package com.jyeol.dividend.model;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.jyeol.dividend.persist.entity.DividendEntity;
+import com.jyeol.dividend.utils.CustomLocalDateDeserializer;
+import com.jyeol.dividend.utils.CustomLocalDateSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,6 +1,5 @@
-package com.jyeol.dividend.model;
+package com.jyeol.dividend.utils;
 
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;

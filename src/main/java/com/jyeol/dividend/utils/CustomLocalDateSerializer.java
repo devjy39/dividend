@@ -1,4 +1,4 @@
-package com.jyeol.dividend.model;
+package com.jyeol.dividend.utils;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
