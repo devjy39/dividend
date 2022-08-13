@@ -64,8 +64,7 @@ public class YahooFinanceScraper implements Scraper{
             }
             scrapResult.setDividendList(dividends);
         } catch (Exception e) {
-
-            log.error(e.getMessage());
+            log.error("yahoo scraping error {}", e.getMessage());
             e.printStackTrace();
         }
 
@@ -87,7 +86,7 @@ public class YahooFinanceScraper implements Scraper{
                     .name(title)
                     .build());
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.error("yahoo scraping error {}", e.getMessage());
             e.printStackTrace();
         }
 

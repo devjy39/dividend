@@ -1,5 +1,7 @@
 package com.jyeol.dividend.security;
 
+import com.jyeol.dividend.exception.impl.UserException;
+import com.jyeol.dividend.exception.type.UserError;
 import com.jyeol.dividend.service.MemberService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -62,7 +64,7 @@ public class TokenProvider {
 
             return claims.getExpiration().after(new Date());
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("invalid token - {}", token);
             return false;
         }
 
@@ -76,9 +78,10 @@ public class TokenProvider {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (ExpiredJwtException e) {
+            log.error("{} - expired Jwt", getUsername(token));
             return e.getClaims();
         } catch (Exception e) {
-            throw new RuntimeException("Invalid token");
+            throw new UserException(UserError.INVALID_TOKEN);
         }
     }
 }
