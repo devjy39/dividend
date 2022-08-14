@@ -11,7 +11,7 @@
 - 회사명 자동완성기능
   - 한 번 쓸 때 자주 호출되기 때문에 인메모리기반 trie 자료구조로 구현, DB로의 로직도 구현
 - Spring Scheduler를 이용해 주기마다 캐시 삭제 및 배당금 스크랩 기능
-- jwt에 member entity의 roles{"WIRTE","READ"}를 넣고 권한에 따른 API 접근
+- jwt에 member entity의 roles{"WIRTE","READ"} 의 권한에 따른 API 접근
   
 
 ## skills
